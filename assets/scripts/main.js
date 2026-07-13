@@ -1,14 +1,32 @@
-import { VagaFrontEnd } from "./motor.js";
+import { carregarVagas } from "./dados.js";
 
-const vaga = new VagaFrontEnd(
-    1,
-    "Tech Solutions",
-    "Front-end",
-    ["HTML", "CSS", "JavaScript"],
-    3500,
-    "Remoto",
-    "JavaScript"
-);
+const elementoStatus = document.querySelector("#mensagem-status");
 
-console.log(vaga);
-console.log(vaga.obterDescricao());
+async function iniciarAplicacao() {
+    elementoStatus.textContent = "Carregando vagas…";
+
+    try {
+        const vagas = await carregarVagas();
+
+        if (vagas.length === 0) {
+            elementoStatus.textContent = "Nenhuma vaga disponível no momento.";
+            return;
+        }
+
+        elementoStatus.textContent =
+            `${vagas.length} vagas carregadas com sucesso.`;
+
+        console.log("Vagas carregadas:", vagas);
+
+        vagas.forEach((vaga) => {
+            console.log(vaga.obterDescricao());
+        });
+    } catch (erro) {
+        elementoStatus.textContent =
+            "Ocorreu um erro ao carregar as vagas. Tente novamente.";
+
+        console.error("Erro ao carregar vagas:", erro);
+    }
+}
+
+iniciarAplicacao();
