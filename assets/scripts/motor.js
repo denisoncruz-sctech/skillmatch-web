@@ -20,16 +20,16 @@ export class Vaga {
     }
     classificarCompatibilidade(percentual) {
 
-    if (percentual >= 80) {
-        return "Alta";
-    }
+        if (percentual >= 80) {
+            return "Alta";
+        }
 
-    if (percentual >= 50) {
-        return "Média";
-    }
+        if (percentual >= 50) {
+            return "Média";
+        }
 
-    return "Baixa";
-}    
+        return "Baixa";
+    }
 }
 
 export class VagaFrontEnd extends Vaga {
@@ -61,44 +61,130 @@ export class VagaFrontEnd extends Vaga {
     }
     calcularCompatibilidade(candidato) {
 
-    const habilidadesEncontradas = [];
-    const habilidadesFaltantes = [];
-    
+        const habilidadesEncontradas = [];
+        const habilidadesFaltantes = [];
+
         this.requisitos.forEach((requisito) => {
 
-        if (candidato.habilidades.includes(requisito)) {
+            if (candidato.habilidades.includes(requisito)) {
 
-            habilidadesEncontradas.push(requisito);
+                habilidadesEncontradas.push(requisito);
 
-        } else {
+            } else {
 
-            habilidadesFaltantes.push(requisito);
+                habilidadesFaltantes.push(requisito);
 
-        }
+            }
 
-    });
+        });
 
-    const percentual =
-    Math.round(
-        (
-            habilidadesEncontradas.length /
-            this.requisitos.length
-        ) * 100
-    );
-    const classificacao =
-    this.classificarCompatibilidade(percentual);
-    
-    return {
-        percentual,
-        classificacao,
-        habilidadesEncontradas,
-        habilidadesFaltantes,
-        
-    };
+        const percentual =
+            Math.round(
+                (
+                    habilidadesEncontradas.length /
+                    this.requisitos.length
+                ) * 100
+            );
+        const classificacao =
+            this.classificarCompatibilidade(percentual);
+
+        return {
+            percentual,
+            classificacao,
+            habilidadesEncontradas,
+            habilidadesFaltantes,
+
+        };
+
+    }
 
 }
+export function analisarVagas(candidato, vagas) {
+    return vagas.map((vaga) => {
+        const resultadoCompatibilidade =
+            vaga.calcularCompatibilidade(candidato);
 
+        return {
+            vaga,
+            ...resultadoCompatibilidade
+        };
+    });
+}
+function desempatarVagas(
+    melhorResultado,
+    resultadoAtual,
+    candidato
+) {
+    const experienciaMeses =
+        candidato.experienciaMeses ?? 0;
 
+    if (experienciaMeses >= 12) {
+        if (
+            resultadoAtual.vaga.salario >
+            melhorResultado.vaga.salario
+        ) {
+            return resultadoAtual;
+        }
 
+        return melhorResultado;
+    }
 
+    if (
+        resultadoAtual.habilidadesFaltantes.length <
+        melhorResultado.habilidadesFaltantes.length
+    ) {
+        return resultadoAtual;
+    }
+
+    return melhorResultado;
+}
+export function encontrarMelhorVaga(resultados, candidato) {
+    if (resultados.length === 0) {
+        return null;
+    }
+
+    return resultados.reduce(
+        (melhorResultado, resultadoAtual) => {
+            if (
+                resultadoAtual.percentual >
+                melhorResultado.percentual
+            ) {
+                return resultadoAtual;
+            }
+
+            if (
+                resultadoAtual.percentual <
+                melhorResultado.percentual
+            ) {
+                return melhorResultado;
+            }
+
+            return desempatarVagas(
+                melhorResultado,
+                resultadoAtual,
+                candidato
+            );
+        }
+    );
+}
+export function gerarRecomendacao(melhorResultado) {
+    if (!melhorResultado) {
+        return "Não foi possível gerar uma recomendação.";
+    }
+
+    const habilidadesFaltantes =
+        melhorResultado.habilidadesFaltantes;
+
+    if (habilidadesFaltantes.length === 0) {
+        return "Seu perfil atende a todos os requisitos da melhor vaga.";
+    }
+
+    if (habilidadesFaltantes.length === 1) {
+        return `Recomendamos estudar ${habilidadesFaltantes[0]} para aumentar sua compatibilidade.`;
+    }
+
+    const habilidadesFormatadas =
+        habilidadesFaltantes.join(", ");
+
+    return `Recomendamos estudar ${habilidadesFormatadas} para aumentar sua compatibilidade com essa vaga.`;
 }
