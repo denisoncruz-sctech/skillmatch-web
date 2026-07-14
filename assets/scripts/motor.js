@@ -18,6 +18,18 @@ export class Vaga {
     obterDescricao() {
         return `${this.cargo} - ${this.empresa}`;
     }
+    classificarCompatibilidade(percentual) {
+
+    if (percentual >= 80) {
+        return "Alta";
+    }
+
+    if (percentual >= 50) {
+        return "Média";
+    }
+
+    return "Baixa";
+}    
 }
 
 export class VagaFrontEnd extends Vaga {
@@ -73,9 +85,12 @@ export class VagaFrontEnd extends Vaga {
             this.requisitos.length
         ) * 100
     );
+    const classificacao =
+    this.classificarCompatibilidade(percentual);
     
     return {
         percentual,
+        classificacao,
         habilidadesEncontradas,
         habilidadesFaltantes,
         
