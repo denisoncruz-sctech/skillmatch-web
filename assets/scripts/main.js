@@ -7,6 +7,14 @@ async function iniciarAplicacao() {
 
     try {
         const vagas = await carregarVagas();
+        const candidato = {
+    nome: "Ricardo",
+    habilidades: [
+        "HTML",
+        "CSS",
+        "JavaScript"
+    ]
+};
 
         if (vagas.length === 0) {
             elementoStatus.textContent = "Nenhuma vaga disponível no momento.";
@@ -19,7 +27,14 @@ async function iniciarAplicacao() {
         console.log("Vagas carregadas:", vagas);
 
         vagas.forEach((vaga) => {
-            console.log(vaga.obterDescricao());
+           // console.log(vaga.obterDescricao());
+            const resultado = vaga.calcularCompatibilidade(candidato);
+
+    console.log("----------------------------");
+
+    console.log(vaga.obterDescricao());
+
+    console.log(resultado);   
         });
     } catch (erro) {
         elementoStatus.textContent =
