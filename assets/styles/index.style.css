@@ -39,8 +39,9 @@ a {
 
 button:focus-visible,
 input:focus-visible,
-a:focus-visible {
-    outline: 0.2rem solid #2563eb;
+a:focus-visible,
+.secao-resultados:focus-visible {
+    outline: none;
 }
 
 .cabecalho {

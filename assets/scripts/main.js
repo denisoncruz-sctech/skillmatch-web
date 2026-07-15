@@ -21,6 +21,7 @@ const erroArea = document.querySelector("#erro-area");
 const erroHabilidades = document.querySelector("#erro-habilidades");
 const erroExperiencia = document.querySelector("#erro-experiencia");
 const CHAVE_CANDIDATO = "skillmatch-candidato";
+const secaoResultados = document.querySelector("#resultados");
 
 
 let vagasCarregadas = [];
@@ -258,6 +259,8 @@ formulario.addEventListener("submit", (evento) => {
       );
 
       renderizarVagas(resultados);
+
+      secaoResultados.focus();
 
       const numeroAnalise =
         contarAnalise();
