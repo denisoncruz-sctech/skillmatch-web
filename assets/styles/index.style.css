@@ -149,6 +149,85 @@ button:hover {
     color: #ffffff;
 }
 
+.card-vaga {
+    flex: 1 1 100%;
+    padding: 1.25rem;
+    border: 0.0625rem solid #d1d5db;
+    border-radius: 0.75rem;
+    background-color: #ffffff;
+}
+
+.card-vaga__cabecalho h3 {
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+}
+
+.card-vaga__empresa {
+    margin-top: 0;
+    color: #4b5563;
+}
+
+.card-vaga__percentual {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.card-vaga__classificacao {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999rem;
+    font-weight: 700;
+}
+
+.classificacao-alta {
+    color: #14532d;
+    background-color: #dcfce7;
+}
+
+.classificacao-media {
+    color: #713f12;
+    background-color: #fef3c7;
+}
+
+.classificacao-baixa {
+    color: #7f1d1d;
+    background-color: #fee2e2;
+}
+
+.card-vaga__detalhes {
+    margin: 1rem 0;
+}
+
+.grupo-habilidades h4 {
+    margin-bottom: 0.5rem;
+}
+
+.grupo-habilidades ul {
+    margin-top: 0;
+    padding-left: 1.25rem;
+}
+
+.melhor-vaga {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    border: 0.125rem solid #2563eb;
+    border-radius: 0.75rem;
+    background-color: #eff6ff;
+}
+
+.melhor-vaga h3 {
+    margin-top: 0;
+}
+
+.melhor-vaga__titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.melhor-vaga__recomendacao {
+    margin-bottom: 0;
+}
+
 @media (min-width: 48rem) {
     #formulario-perfil {
         flex-direction: row;
@@ -168,6 +247,10 @@ button:hover {
         flex-direction: row;
         flex-wrap: wrap;
     }
+
+    .card-vaga {
+    flex-basis: calc(50% - 0.5rem);
+}
 }
 
 button:disabled {

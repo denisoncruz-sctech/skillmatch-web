@@ -1,5 +1,14 @@
 import { carregarVagas } from "./dados.js";
-import { analisarVagas, encontrarMelhorVaga, gerarRecomendacao } from "./motor.js";
+import {
+  analisarVagas,
+  encontrarMelhorVaga,
+  gerarRecomendacao,
+} from "./motor.js";
+import {
+  limparResultados,
+  renderizarVagas,
+  renderizarMelhorVaga,
+} from "./ui.js";
 
 const formulario = document.querySelector("#formulario-perfil");
 const elementoStatus = document.querySelector("#mensagem-status");
@@ -9,113 +18,36 @@ const campoHabilidades = document.querySelector("#habilidades");
 const campoExperiencia = document.querySelector("#experiencia");
 const erroNome = document.querySelector("#erro-nome");
 const erroArea = document.querySelector("#erro-area");
-const erroHabilidades = document.querySelector(
-  "#erro-habilidades"
-);
-const erroExperiencia = document.querySelector(
-  "#erro-experiencia"
-);
+const erroHabilidades = document.querySelector("#erro-habilidades");
+const erroExperiencia = document.querySelector("#erro-experiencia");
 
 let vagasCarregadas = [];
 
-
 async function iniciarAplicacao() {
-    elementoStatus.textContent = "Carregando vagas…";
+  elementoStatus.textContent = "Carregando vagas…";
 
-      try {
+  try {
     vagasCarregadas = await carregarVagas();
 
     if (vagasCarregadas.length === 0) {
-      elementoStatus.textContent =
-        "Nenhuma vaga disponível no momento.";
+      elementoStatus.textContent = "Nenhuma vaga disponível no momento.";
 
-      formulario
-        .querySelector("button[type='submit']")
-        .disabled = true;
+      formulario.querySelector("button[type='submit']").disabled = true;
 
       return;
     }
 
+    elementoStatus.textContent = `${vagasCarregadas.length} vagas carregadas. Preencha seu perfil para iniciar a análise.`;
+
+  } catch (erro) {
     elementoStatus.textContent =
-      `${vagasCarregadas.length} vagas carregadas. Preencha seu perfil para iniciar a análise.`;
+      "Ocorreu um erro ao carregar as vagas. Tente novamente.";
 
-   /* try {
-        const vagas = await carregarVagas();
-        if (vagas.length === 0) {
-            elementoStatus.textContent = "Nenhuma vaga disponível no momento.";
+    formulario.querySelector("button[type='submit']").disabled = true;
 
-            return;
-        }
-        const candidato = {
-            nome: "Ricardo",
-            habilidades: [
-                "HTML",
-                "CSS",
-                "JavaScript"
-            ],
-            experienciaMeses: 6
-        };
-
-        const resultados = analisarVagas(
-            candidato,
-            vagas
-        );
-
-        const melhorResultado = encontrarMelhorVaga(
-            resultados,
-            candidato
-        );
-
-        const recomendacao = gerarRecomendacao(
-            melhorResultado
-        );
-
-        elementoStatus.textContent =
-            `${vagas.length} vagas carregadas com sucesso.`;
-
-        console.log("Resultados completos:", resultados);
-
-        console.log("----------------------------");
-
-        console.log(
-            "Melhor vaga:",
-            melhorResultado.vaga.obterDescricao()
-        );
-
-        console.log(
-            `Compatibilidade: ${melhorResultado.percentual}%`
-        );
-
-        console.log(
-            `Classificação: ${melhorResultado.classificacao}`
-        );
-
-        console.log(
-            "Habilidades encontradas:",
-            melhorResultado.habilidadesEncontradas
-        );
-
-        console.log(
-            "Habilidades faltantes:",
-            melhorResultado.habilidadesFaltantes
-        );
-
-        console.log(
-            "Recomendação:",
-            recomendacao
-        );*/
-    } catch (erro) {
-        elementoStatus.textContent =
-            "Ocorreu um erro ao carregar as vagas. Tente novamente.";
-
-        formulario
-      .querySelector("button[type='submit']")
-      .disabled = true;
-
-        console.error("Erro ao carregar vagas:",erro);
-    }
+    console.error("Erro ao carregar vagas:", erro);
+  }
 }
-
 
 function limparErros() {
   erroNome.textContent = "";
@@ -152,18 +84,14 @@ function validarFormulario() {
     mostrarErro(
       campoNome,
       erroNome,
-      "Informe um nome com pelo menos 2 caracteres."
+      "Informe um nome com pelo menos 2 caracteres.",
     );
 
     formularioValido = false;
   }
 
   if (area.length < 2) {
-    mostrarErro(
-      campoArea,
-      erroArea,
-      "Informe uma área de interesse."
-    );
+    mostrarErro(campoArea, erroArea, "Informe uma área de interesse.");
 
     formularioValido = false;
   }
@@ -172,20 +100,17 @@ function validarFormulario() {
     mostrarErro(
       campoHabilidades,
       erroHabilidades,
-      "Informe pelo menos uma habilidade."
+      "Informe pelo menos uma habilidade.",
     );
 
     formularioValido = false;
   }
 
-  if (
-    Number.isNaN(experienciaMeses) ||
-    experienciaMeses < 0
-  ) {
+  if (Number.isNaN(experienciaMeses) || experienciaMeses < 0) {
     mostrarErro(
       campoExperiencia,
       erroExperiencia,
-      "A experiência deve ser igual ou maior que zero."
+      "A experiência deve ser igual ou maior que zero.",
     );
 
     formularioValido = false;
@@ -203,7 +128,7 @@ function criarCandidato() {
     nome: campoNome.value.trim(),
     area: campoArea.value.trim(),
     habilidades,
-    experienciaMeses: Number(campoExperiencia.value)
+    experienciaMeses: Number(campoExperiencia.value),
   };
 }
 
@@ -213,8 +138,7 @@ formulario.addEventListener("submit", (evento) => {
   const formularioValido = validarFormulario();
 
   if (!formularioValido) {
-    const primeiroCampoInvalido =
-      formulario.querySelector(".campo-invalido");
+    const primeiroCampoInvalido = formulario.querySelector(".campo-invalido");
 
     primeiroCampoInvalido?.focus();
 
@@ -223,37 +147,31 @@ formulario.addEventListener("submit", (evento) => {
 
   const candidato = criarCandidato();
 
-  const resultados = analisarVagas(
-    candidato,
-    vagasCarregadas
-  );
+  const resultados = analisarVagas(candidato, vagasCarregadas);
 
-  const melhorResultado = encontrarMelhorVaga(
-    resultados,
-    candidato
-  );
+  const melhorResultado = encontrarMelhorVaga(resultados, candidato);
 
-  const recomendacao =
-    gerarRecomendacao(melhorResultado);
+  const recomendacao = gerarRecomendacao(melhorResultado);
 
-  elementoStatus.textContent =
-    `Análise concluída para ${candidato.nome}.`;
+  limparResultados();
+
+renderizarMelhorVaga(
+  melhorResultado,
+  recomendacao
+);
+
+renderizarVagas(resultados);
+
+  elementoStatus.textContent = `Análise concluída para ${candidato.nome}.`;
 
   console.log("Candidato:", candidato);
   console.log("Resultados:", resultados);
 
-  console.log(
-    "Melhor vaga:",
-    melhorResultado.vaga.obterDescricao()
-  );
+  console.log("Melhor vaga:", melhorResultado.vaga.obterDescricao());
 
-  console.log(
-    `Compatibilidade: ${melhorResultado.percentual}%`
-  );
+  console.log(`Compatibilidade: ${melhorResultado.percentual}%`);
 
-  console.log(
-    `Classificação: ${melhorResultado.classificacao}`
-  );
+  console.log(`Classificação: ${melhorResultado.classificacao}`);
 
   console.log("Recomendação:", recomendacao);
 });
