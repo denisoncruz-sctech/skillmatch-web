@@ -34,13 +34,6 @@ export class Vaga {
     const habilidadesFaltantes = this.requisitos.filter((requisito) =>
       !habilidadesCandidato.includes(requisito.toLowerCase())
     );
-    /*const habilidadesEncontradas = this.requisitos.filter((requisito) => {
-      return candidato.habilidades.includes(requisito);
-    });
-
-    const habilidadesFaltantes = this.requisitos.filter((requisito) => {
-      return !candidato.habilidades.includes(requisito);
-    });*/
 
     const percentual = Math.round(
       (habilidadesEncontradas.length / this.requisitos.length) * 100,

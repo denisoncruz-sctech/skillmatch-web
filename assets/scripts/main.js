@@ -268,30 +268,7 @@ formulario.addEventListener("submit", (evento) => {
       elementoStatus.textContent =
         `Análise #${numeroAnalise} concluída para ${candidato.nome}.`;
 
-      console.log("Candidato:", candidato);
 
-      console.log(
-        "Resultados:",
-        resultados
-      );
-
-      console.log(
-        "Melhor vaga:",
-        melhorResultado.vaga.obterDescricao()
-      );
-
-      console.log(
-        `Compatibilidade: ${melhorResultado.percentual}%`
-      );
-
-      console.log(
-        `Classificação: ${melhorResultado.classificacao}`
-      );
-
-      console.log(
-        "Recomendação:",
-        recomendacao
-      );
     }
   );
 });
