@@ -25,6 +25,17 @@ const CHAVE_CANDIDATO = "skillmatch-candidato";
 
 let vagasCarregadas = [];
 
+function criarContadorAnalises() {
+  let totalAnalises = 0;
+
+  return function () {
+    totalAnalises++;
+    return totalAnalises;
+  };
+}
+
+const contarAnalise = criarContadorAnalises();
+
 async function iniciarAplicacao() {
   elementoStatus.textContent = "Carregando vagas…";
 
@@ -143,6 +154,33 @@ function criarCandidato() {
   };
 }
 
+
+function executarAnalise(
+  candidato,
+  vagas,
+  callback
+) {
+  const resultados =
+    analisarVagas(candidato, vagas);
+
+  const melhorResultado =
+    encontrarMelhorVaga(
+      resultados,
+      candidato
+    );
+
+  const recomendacao =
+    gerarRecomendacao(
+      melhorResultado
+    );
+
+  callback(
+    resultados,
+    melhorResultado,
+    recomendacao
+  );
+}
+
 function salvarCandidato(candidato) {
   localStorage.setItem(
     CHAVE_CANDIDATO,
@@ -192,7 +230,8 @@ formulario.addEventListener("submit", (evento) => {
   const formularioValido = validarFormulario();
 
   if (!formularioValido) {
-    const primeiroCampoInvalido = formulario.querySelector(".campo-invalido");
+    const primeiroCampoInvalido =
+      formulario.querySelector(".campo-invalido");
 
     primeiroCampoInvalido?.focus();
 
@@ -203,32 +242,55 @@ formulario.addEventListener("submit", (evento) => {
 
   salvarCandidato(candidato);
 
-  const resultados = analisarVagas(candidato, vagasCarregadas);
+  executarAnalise(
+    candidato,
+    vagasCarregadas,
+    (
+      resultados,
+      melhorResultado,
+      recomendacao
+    ) => {
+      limparResultados();
 
-  const melhorResultado = encontrarMelhorVaga(resultados, candidato);
+      renderizarMelhorVaga(
+        melhorResultado,
+        recomendacao
+      );
 
-  const recomendacao = gerarRecomendacao(melhorResultado);
+      renderizarVagas(resultados);
 
-  limparResultados();
+      const numeroAnalise =
+        contarAnalise();
 
-  renderizarMelhorVaga(
-    melhorResultado,
-    recomendacao
+      elementoStatus.textContent =
+        `Análise #${numeroAnalise} concluída para ${candidato.nome}.`;
+
+      console.log("Candidato:", candidato);
+
+      console.log(
+        "Resultados:",
+        resultados
+      );
+
+      console.log(
+        "Melhor vaga:",
+        melhorResultado.vaga.obterDescricao()
+      );
+
+      console.log(
+        `Compatibilidade: ${melhorResultado.percentual}%`
+      );
+
+      console.log(
+        `Classificação: ${melhorResultado.classificacao}`
+      );
+
+      console.log(
+        "Recomendação:",
+        recomendacao
+      );
+    }
   );
-
-  renderizarVagas(resultados);
-
-  elementoStatus.textContent = `Análise concluída para ${candidato.nome}.`;
-
-  console.log("Candidato:", candidato);
-  console.log("Resultados:", resultados);
-
-  console.log("Melhor vaga:", melhorResultado.vaga.obterDescricao());
-
-  console.log(`Compatibilidade: ${melhorResultado.percentual}%`);
-
-  console.log(`Classificação: ${melhorResultado.classificacao}`);
-
-  console.log("Recomendação:", recomendacao);
 });
-iniciarAplicacao();
+
+iniciarAplicacao();  
