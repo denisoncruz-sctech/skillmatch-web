@@ -20,6 +20,8 @@ const erroNome = document.querySelector("#erro-nome");
 const erroArea = document.querySelector("#erro-area");
 const erroHabilidades = document.querySelector("#erro-habilidades");
 const erroExperiencia = document.querySelector("#erro-experiencia");
+const CHAVE_CANDIDATO = "skillmatch-candidato";
+
 
 let vagasCarregadas = [];
 
@@ -38,6 +40,15 @@ async function iniciarAplicacao() {
     }
 
     elementoStatus.textContent = `${vagasCarregadas.length} vagas carregadas. Preencha seu perfil para iniciar a análise.`;
+    const candidatoSalvo =
+      carregarCandidatoSalvo();
+
+    if (candidatoSalvo) {
+      preencherFormulario(candidatoSalvo);
+
+      elementoStatus.textContent =
+        `${vagasCarregadas.length} vagas carregadas. Perfil restaurado automaticamente.`;
+    }
 
   } catch (erro) {
     elementoStatus.textContent =
@@ -132,6 +143,49 @@ function criarCandidato() {
   };
 }
 
+function salvarCandidato(candidato) {
+  localStorage.setItem(
+    CHAVE_CANDIDATO,
+    JSON.stringify(candidato)
+  );
+}
+
+function carregarCandidatoSalvo() {
+  const candidatoSalvo =
+    localStorage.getItem(CHAVE_CANDIDATO);
+
+  if (!candidatoSalvo) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(candidatoSalvo);
+  } catch (erro) {
+    console.error(
+      "Erro ao ler candidato salvo:",
+      erro
+    );
+
+    localStorage.removeItem(CHAVE_CANDIDATO);
+
+    return null;
+  }
+}
+
+function preencherFormulario(candidato) {
+  campoNome.value =
+    candidato.nome ?? "";
+
+  campoArea.value =
+    candidato.area ?? "";
+
+  campoHabilidades.value =
+    candidato.habilidades?.join(", ") ?? "";
+
+  campoExperiencia.value =
+    candidato.experienciaMeses ?? 0;
+}
+
 formulario.addEventListener("submit", (evento) => {
   evento.preventDefault();
 
@@ -147,6 +201,8 @@ formulario.addEventListener("submit", (evento) => {
 
   const candidato = criarCandidato();
 
+  salvarCandidato(candidato);
+
   const resultados = analisarVagas(candidato, vagasCarregadas);
 
   const melhorResultado = encontrarMelhorVaga(resultados, candidato);
@@ -155,12 +211,12 @@ formulario.addEventListener("submit", (evento) => {
 
   limparResultados();
 
-renderizarMelhorVaga(
-  melhorResultado,
-  recomendacao
-);
+  renderizarMelhorVaga(
+    melhorResultado,
+    recomendacao
+  );
 
-renderizarVagas(resultados);
+  renderizarVagas(resultados);
 
   elementoStatus.textContent = `Análise concluída para ${candidato.nome}.`;
 
