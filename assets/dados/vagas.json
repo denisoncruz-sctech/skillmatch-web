@@ -1,0 +1,58 @@
+[
+    {
+        "id": 1,
+        "empresa": "Tech Solutions",
+        "cargo": "Desenvolvedor Front-end Júnior",
+        "requisitos": [
+            "HTML",
+            "CSS",
+            "JavaScript"
+        ],
+        "salario": 3500,
+        "modalidade": "Remoto",
+        "stack": "JavaScript"
+    },
+    {
+        "id": 2,
+        "empresa": "Digital Labs",
+        "cargo": "Desenvolvedor Front-end",
+        "requisitos": [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "Git"
+        ],
+        "salario": 4200,
+        "modalidade": "Híbrido",
+        "stack": "JavaScript"
+    },
+    {
+        "id": 3,
+        "empresa": "Web Factory",
+        "cargo": "Desenvolvedor Front-end React",
+        "requisitos": [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "React"
+        ],
+        "salario": 5200,
+        "modalidade": "Remoto",
+        "stack": "React"
+    },
+    {
+        "id": 4,
+        "empresa": "Code Vision",
+        "cargo": "Desenvolvedor Full Stack Júnior",
+        "requisitos": [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "Node.js",
+            "Git"
+        ],
+        "salario": 5500,
+        "modalidade": "Presencial",
+        "stack": "Node.js"
+    }
+]

@@ -10,10 +10,16 @@
 
     <meta
         name="description"
-        content="SkillMatch é uma aplicação que compara as habilidades de candidatos com vagas de desenvolvimento front-end."
+        content="SkillMatch compara as habilidades de candidatos com vagas de tecnologia e apresenta a compatibilidade e recomendações de estudo."
     >
 
     <title>SkillMatch | Compatibilidade com vagas</title>
+
+    <link
+        rel="icon"
+        type="image/svg+xml"
+        href="./assets/img/logo.svg"
+    > 
 
     <link
         rel="stylesheet"
@@ -58,6 +64,7 @@
                         id="nome"
                         name="nome"
                         autocomplete="name"
+                        aria-describedby="erro-nome"
                         required
                     >
 
@@ -76,6 +83,7 @@
                         id="area"
                         name="area"
                         placeholder="Ex.: Front-end"
+                        aria-describedby="erro-area"
                         required
                     >
 
@@ -122,6 +130,7 @@
                         name="experiencia"
                         min="0"
                         value="0"
+                        aria-describedby="erro-experiencia"
                         required
                     >
 
@@ -142,12 +151,14 @@
             id="resultados"
             class="secao-resultados"
             aria-labelledby="titulo-resultados"
+            tabindex="-1"
         >
             <h2 id="titulo-resultados">Vagas encontradas</h2>
 
             <p
                 id="mensagem-status"
                 class="mensagem-status"
+                role="status"
                 aria-live="polite"
             ></p>
 
@@ -156,7 +167,7 @@
             <div
                 id="lista-vagas"
                 class="lista-vagas"
-                aria-live="polite"
+                aria-label="Resultados das vagas analisadas"
             ></div>
         </section>
     </main>
